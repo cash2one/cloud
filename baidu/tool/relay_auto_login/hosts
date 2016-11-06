@@ -1,0 +1,13 @@
+online-main
+    yf-orp-apollo.yf01.baidu.com DoorGod yaokun
+dev
+	cp01-rdqa-dev340.cp01.baidu.com DoorGod yaokun
+    cq01-hj-lh-machinelearning00.epc.baidu.com root ml00@bravo
+online-other
+    nj02-bccs-tieba-pclive00.nj02 DoorGod yaokun
+    nj02-bccs-tieba-pclive01.nj02 DoorGod yaokun
+db-relay
+    10.95.29.35 rd MhxzKhl
+other
+    nj03-game-m22dianquan11.nj03.baidu.com hadoop PW4hadoop
+    cq01-ocean-1920.epc.baidu.com yangbaoxing 123456

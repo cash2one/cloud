@@ -1,0 +1,26 @@
+broker.id=0
+
+num.network.threads=3
+num.io.threads=8
+num.partitions=1
+
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+
+# single message max size
+#message.max.bytes=100
+
+log.flush.interval.messages=20
+log.flush.interval.ms=10000
+log.retention.hours=168
+log.retention.bytes=1073741824
+log.segment.bytes=1073741824
+log.retention.check.interval.ms=300000
+
+zookeeper.connection.timeout.ms=6000
+
+# configuration web page
+# https://kafka.apache.org/08/configuration.html
+
+# auto gen

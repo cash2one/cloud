@@ -1,0 +1,30 @@
+broker.id=1
+
+num.network.threads=3
+
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+
+num.partitions=1
+
+# 最大积累的消息数量
+log.flush.interval.messages=20
+
+# 数据写入硬盘的最大时间
+log.flush.interval.ms=10000
+
+log.retention.hours=168
+
+log.segment.bytes=1073741824
+
+log.retention.check.interval.ms=300000
+
+zookeeper.connection.timeout.ms=6000
+
+# auto gen
+listeners=PLAINTEXT://10.208.71.23:9094
+port=9094
+zookeeper.connect=10.208.71.23:2181,10.208.71.24:2181
+log.dirs=/home/work/yaokun/log/kafka

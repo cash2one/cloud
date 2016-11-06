@@ -1,0 +1,250 @@
+" --------------------------------------------
+" --------------- Global Variable ------------
+" --------------------------------------------
+let g:enable_bundle=1
+let g:youcompleteme_switch=1
+
+" judge the OS
+if(has("win32") || has("win64") || has("win95") || has("win16"))
+    let g:system="win"
+else
+    let g:system="unix" 
+endif
+
+" --------------------------------------------
+" ------------- Function defination ----------
+" --------------------------------------------
+func! InitEnv()
+    if g:system == 'win'
+        set rtp+=$VIM/vimfiles/bundle/Vundle.vim
+        set guifont=Consolas:h18
+        colorscheme torte
+    endif
+    if g:system == 'unix'
+        set rtp=~/.vim/bundle/Vundle.vim,$VIMRUNTIME
+        if(has('gui_running'))
+            set gfn=Consolas:h16
+            set guifontwide="Hiragino Sans GB" 
+            set background=dark
+            colorscheme torte
+        else
+            set t_Co=256
+            " set background=dark
+        endif
+    endif
+endfu
+
+func! CompileFunc()
+    exec "w"
+    if &filetype == 'cpp'
+        exec "!gcc % -o %<"
+        exec "! ./%<"
+    elseif &filetype == 'php'
+        exec ":! php %"
+    elseif &filetype == 'python'
+        exec "!python %"
+    elseif &filetype == 'sh'
+        exec "!sh % %<"
+    endif
+endfunc
+
+func! SetMouse()
+    if has('mouse')
+        set mouse-=c
+    else
+        set mouse=a
+    endif
+endfunc
+
+" 初始化bundle插件
+func! InitBundle()
+    if g:enable_bundle == 1
+        " **********bundle相关配置**********************************
+        set nocompatible
+        filetype off
+        call vundle#begin()
+
+        " 管理自身
+        Plugin 'gmarik/Vundle.vim'
+
+        "1-> vim-scripts repos插件
+        Bundle 'SuperTab'
+        Bundle 'The-NERD-tree'
+        Bundle 'DoxygenToolkit.vim'
+        Bundle 'taglist.vim'
+
+        "2-> github上的人写的插件
+        Bundle 'Lokaltog/vim-powerline'
+        "Bundle 'jiangmiao/auto-pairs'
+        Bundle 'jistr/vim-nerdtree-tabs'
+        Bundle 'Yggdroot/indentLine'
+        Bundle 'syaokun219/vim-phpcheck'
+        if v:version >= 730 && g:youcompleteme_switch > 0
+            " YCM need 7.3 more
+            Bundle 'Valloric/YouCompleteMe'
+        endif
+
+        "3-> 如果是非github插件
+        "Bundle 'git://git.wincent.com/command-t.git'
+
+        "4-> 主题文件
+        Bundle 'tomasr/molokai'
+
+        call vundle#end()            " required
+        filetype plugin indent on    " required
+    endif
+endfunc
+
+func! SetEnv()
+endfunc
+
+func! SetBundle()
+    if g:enable_bundle == 1
+        " ----------------------具体插件配置----------------------------------
+        "supertab
+        " remember the last completion method, until you change it
+
+        "nerdtree tabs
+        let g:nerdtree_tabs_open_on_console_startup=0
+
+        "nerdtree
+        let g:NERDTreeIgnore = ['.*\.o$','.*\.ko$','.*\.gz$']
+        let g:NERDTreeWinSize = 18
+        let g:NERDTreeAutoDeleteBuffer = 1
+        let g:NERDTreeWinPos = "left"
+
+        "snipMate
+        let g:snips_author = "syaokun219"
+
+        " DoxygenToolkit
+        let g:DoxygenToolkit_authorName="syaokun219"
+
+        " php checker
+        let g:php_check_autorun = 1
+
+        let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+        let g:SuperTabRetainCompletionType=1
+        let g:SuperTabMappingForward="<tab>"
+
+        " YouCompleteMe configuration
+        if v:version >= 700 && g:youcompleteme_switch > 0
+            let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+        endif
+
+        " taglist
+        let Tlist_Use_Horiz_Window=1
+
+        " powerline
+        let g:Powerline_stl_path_style = 'full'
+
+        " 弹出框相关的键配置
+        inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+
+        " plugin map
+        map wm      <plug>NERDTreeTabsToggle<CR>
+        map <leader>il :IndentLinesToggle<CR>
+    endif
+endfunc
+
+func! SetColorScheme()
+    let g:molokai_original = 1
+    colorscheme molokai
+endfunc
+
+" --------------------------------------------
+" ------------ General configuration ---------
+" --------------------------------------------
+set history=500
+
+set ruler
+
+set cmdheight=3
+
+" auto load when a file is changed from the outside
+set autoread
+
+" 设置鼠标模式
+set mouse=a
+
+" 解决中文显示一半的问题
+set ambiwidth=double
+
+set smarttab
+
+" enconding guess list
+set fencs=utf-8,cp936
+set fileencodings=utf-8,cp936
+set termencoding=utf-8
+
+set nobackup
+set nowritebackup
+set noswapfile
+set nowb
+
+" match the bracket
+set showmatch
+
+syntax enable
+
+" regex stuff
+set completeopt=longest,menu
+set magic
+" magic模式下 除 $ . * ^ 外需要加反斜杠
+" nomagic 除$ ^ 外需要加反斜杠
+
+set number
+
+" highlight
+set cursorline
+set cursorcolumn
+
+set incsearch
+set hlsearch
+
+set backspace=indent,eol,start
+" set smartindent
+set tabstop=4 expandtab
+" auto indent tab size
+set shiftwidth=4
+
+" auto omnifunc auto complete
+set omnifunc=syntaxcomplete#Complete
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c set omnifunc=ccomplete#Complete
+set tags+=~/.vim/systags
+
+set autoindent
+set smartindent
+set wrap
+
+set laststatus=2
+
+" change dir to current dir
+au BufRead,BufNewFile,BufEnter * cd %:p:h
+
+set colorcolumn=110
+highlight ColorColumn ctermbg=darkgray
+
+" --------------------------------------------
+" ----------------- Hot key ------------------
+" --------------------------------------------
+map <F12>   :!php -l %<CR>
+map <F5>    :call CompileFunc() <CR>
+nmap tn     :tabnew <CR>
+"前一个标签，后一个标签
+nmap tr     :tabp <CR>
+nmap ty     :tabn <CR>
+nmap ms     :call SetMouse() <CR>
+
+" tag list
+nmap tg     :TlistToggle <CR>
+
+" --------------------------------------------
+" --------------- Main process ---------------
+" --------------------------------------------
+call InitEnv()
+call InitBundle()
+
+call SetEnv()
+call SetBundle()
+call SetColorScheme()

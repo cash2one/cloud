@@ -1,0 +1,10 @@
+storm.zookeeper.servers:
+    - "10.46.194.185"
+    - "10.95.41.51"
+#nimbus.host: "10.46.194.185"
+nimbus.host: "10.95.41.51"
+storm.local.dir: "/home/users/yaokun/netdisk/data/storm"
+supervisor.slots.ports:
+    - 8991
+    - 8992
+storm.log.dir: "/home/users/yaokun/netdisk/log/storm"

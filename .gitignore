@@ -1,0 +1,12 @@
+*DS_Store
+
+*.o
+
+*.un~
+
+*class
+
+code/c/lcs
+
+*.log
+*.log.wf
