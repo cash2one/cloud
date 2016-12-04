@@ -1,8 +1,12 @@
 " --------------------------------------------
 " --------------- Global Variable ------------
 " --------------------------------------------
+" if 0 will block all plugin
 let g:enable_bundle=1
-let g:youcompleteme_switch=1
+
+" only one complete extension to use at same time
+let g:youcompleteme_switch=0
+let g:neocomplete#enable_at_startup=0
 
 " judge the OS
 if(has("win32") || has("win64") || has("win95") || has("win16"))
@@ -29,7 +33,7 @@ func! InitEnv()
             colorscheme torte
         else
             set t_Co=256
-            " set background=dark
+            set background=dark
         endif
     endif
 endfu
@@ -45,14 +49,6 @@ func! CompileFunc()
         exec "!python %"
     elseif &filetype == 'sh'
         exec "!sh % %<"
-    endif
-endfunc
-
-func! SetMouse()
-    if has('mouse')
-        set mouse-=c
-    else
-        set mouse=a
     endif
 endfunc
 
@@ -75,14 +71,19 @@ func! InitBundle()
 
         "2-> github上的人写的插件
         Bundle 'Lokaltog/vim-powerline'
-        "Bundle 'jiangmiao/auto-pairs'
+        Bundle 'jiangmiao/auto-pairs'
         Bundle 'jistr/vim-nerdtree-tabs'
         Bundle 'Yggdroot/indentLine'
-        Bundle 'syaokun219/vim-phpcheck'
+        Bundle 'Shougo/neocomplete.vim'
+        Bundle 'morysky/vim-phpcheck'
+        Bundle 'shanzi/autoHEADER'
         if v:version >= 730 && g:youcompleteme_switch > 0
             " YCM need 7.3 more
             Bundle 'Valloric/YouCompleteMe'
         endif
+
+        " instant show the markdown doc
+        " Bundle 'isnowfy/python-vim-instant-markdown'
 
         "3-> 如果是非github插件
         "Bundle 'git://git.wincent.com/command-t.git'
@@ -101,9 +102,6 @@ endfunc
 func! SetBundle()
     if g:enable_bundle == 1
         " ----------------------具体插件配置----------------------------------
-        "supertab
-        " remember the last completion method, until you change it
-
         "nerdtree tabs
         let g:nerdtree_tabs_open_on_console_startup=0
 
@@ -112,15 +110,18 @@ func! SetBundle()
         let g:NERDTreeWinSize = 18
         let g:NERDTreeAutoDeleteBuffer = 1
         let g:NERDTreeWinPos = "left"
-
-        "snipMate
-        let g:snips_author = "syaokun219"
-
+        
         " DoxygenToolkit
-        let g:DoxygenToolkit_authorName="syaokun219"
+        let g:DoxygenToolkit_authorName="morysky"
 
         " php checker
-        let g:php_check_autorun = 1
+        let g:PHP_SYNTAX_CHECK_BIN = "php"
+        let g:php_check_autorun = 0
+        
+        " header
+        let g:autoHEADER_auto_enable = 0
+        let g:autoHEADER_default_author = "morysky | yaokun"
+        let g:autoHEADER_fill_char_repeat = 80
 
         let g:SuperTabDefaultCompletionType="<C-X><C-O>"
         let g:SuperTabRetainCompletionType=1
@@ -147,8 +148,13 @@ func! SetBundle()
 endfunc
 
 func! SetColorScheme()
-    let g:molokai_original = 1
-    colorscheme molokai
+    try 
+        let g:molokai_original = 1
+        colorscheme molokai
+    catch /^Vim\%((\a\+)\)\=:E185/
+        " if molokai do not exist
+        colorscheme desert
+    endtry
 endfunc
 
 " --------------------------------------------
@@ -164,6 +170,8 @@ set cmdheight=3
 set autoread
 
 " 设置鼠标模式
+" c 命令行模式，可以直接复制粘贴,就像在终端中一样
+" a 所有模式，可以做诸如点击Tlist的tag，鼠标拖拉窗口等操作
 set mouse=a
 
 " 解决中文显示一半的问题
@@ -211,7 +219,7 @@ set shiftwidth=4
 set omnifunc=syntaxcomplete#Complete
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
-set tags+=~/.vim/systags
+set tags=./tags,./TAGS,tags;~,TAGS;~
 
 set autoindent
 set smartindent
@@ -225,16 +233,24 @@ au BufRead,BufNewFile,BufEnter * cd %:p:h
 set colorcolumn=110
 highlight ColorColumn ctermbg=darkgray
 
+" u got a fast terminal
+" set ttyfast " this could stop neo complete work
+set ttyscroll=3
+set lazyredraw "
+
+set nocursorcolumn
+set nocursorline
+set norelativenumber
+syntax sync minlines=256
+
 " --------------------------------------------
 " ----------------- Hot key ------------------
 " --------------------------------------------
-map <F12>   :!php -l %<CR>
-map <F5>    :call CompileFunc() <CR>
+map :run    :call CompileFunc() <CR>
 nmap tn     :tabnew <CR>
 "前一个标签，后一个标签
 nmap tr     :tabp <CR>
 nmap ty     :tabn <CR>
-nmap ms     :call SetMouse() <CR>
 
 " tag list
 nmap tg     :TlistToggle <CR>

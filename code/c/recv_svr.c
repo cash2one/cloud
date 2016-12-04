@@ -19,7 +19,7 @@ static unsigned int recv_count = 0; /* counter of recv file */
 static FILE* log_file = NULL; /* log file */
 static unsigned int is_daemonize = 0; /* default is close */
 
-#define DEFAULT_FILE_PATH "/home/work/orp/" /* file path of recv file when untar */
+#define DEFAULT_FILE_PATH "/home/work/orp" /* file path of recv file when untar */
 static char* file_path = NULL;
 
 int init() {
@@ -48,6 +48,12 @@ int do_accept() {
     if (0 == pid) {
         // child process
         log_file = stdout;
+
+        if(0 == access(file_path, F_OK)) {
+        } else {
+            fprintf(stderr, "Cound not found the dest path\n");
+        }
+
         execlp("tar", "tar", "-xf", "recv_file.tar.gz", "-C", file_path, NULL);
         /* after tar do something */
         // fprintf(log_file, "%s", strcat(file_path, "build.sh"));
@@ -156,7 +162,7 @@ int main(int argc, char *argv[]) {
 
     sfd = create_and_bind(port);
     if(sfd == -1)
-        abort();
+        return -1;;
 
     if (0 < is_daemonize) {
         pid = fork();
@@ -176,18 +182,18 @@ int main(int argc, char *argv[]) {
 
     ret = make_socket_non_blocking(sfd);
     if(ret == -1)
-        abort();
+        return -1;;
 
     ret = listen(sfd, SOMAXCONN);
     if(ret == -1) {
         perror("listen failed");
-        abort();
+        return -1;;
     }
 
     efd = epoll_create(1);
     if(efd == -1) {
         perror("epoll_create");
-        abort();
+        return -1;;
     }
 
     event.data.fd = sfd;
@@ -195,7 +201,7 @@ int main(int argc, char *argv[]) {
     ret = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event); /* add socket to event queue */
     if(ret == -1) {
         perror("epoll_ctl");
-        abort();
+        return -1;;
     }
 
     /* Buffer where events are returned */
@@ -247,14 +253,14 @@ int main(int argc, char *argv[]) {
                      * list of fds to monitor. */
                     ret = make_socket_non_blocking(infd);
                     if(ret == -1)
-                        abort();
+                        return -1;;
 
                     event.data.fd = infd;
                     event.events = EPOLLIN | EPOLLET;
                     ret = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
                     if(ret == -1) {
                         perror("epoll_ctl");
-                        abort();
+                        return -1;;
                     }
                 }
                 continue;
@@ -280,7 +286,7 @@ int main(int argc, char *argv[]) {
                         break;
                     }
                     if (NULL == recv_file) {
-                        recv_file = fopen("recv_file.tar.gz", "w");
+                        recv_file = fopen("recv_file.tar.gz", "wb");
                         if (recv_file == NULL) {
                             fprintf(log_file, "fail to open file when ready to write!");
                             break;
@@ -291,7 +297,7 @@ int main(int argc, char *argv[]) {
                     ret = fwrite(buf, 1, count, recv_file);
                     if(ret == -1) {
                         fprintf(log_file, "fail to write file!");
-                        abort();
+                        return -1;;
                     }
                 }
 

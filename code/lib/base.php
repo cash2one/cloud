@@ -10,11 +10,13 @@
  * 5. db
  */
 
-
 // init const
-define('MEMORY_MAX_GB', 2);
+define('MEMORY_MAX_GB', 8);
 define('SEP', "\n");
 ini_set("memory_limit",MEMORY_MAX_GB * 1024 ."M");
+set_time_limit(0);
+
+date_default_timezone_set('Asia/Shanghai');
 
 // init const check
 if (!defined('MODULE_NAME')) {

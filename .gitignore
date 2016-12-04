@@ -7,6 +7,8 @@
 *class
 
 code/c/lcs
+code/c/recv_log
+code/c/recv_svr
 
 *.log
 *.log.wf
